@@ -26,20 +26,20 @@ public class ResourceManager {
     public void loadAssets(ScreenType type) {
         switch (type) {
             case MENU:
-                assetManager.load("my.pack", TextureAtlas.class);
+                assetManager.load("my2.pack", TextureAtlas.class);
                 assetManager.load("bg.png", Texture.class);
                 assetManager.finishLoading();
-                mainAtlas = assetManager.get("my.pack", TextureAtlas.class);
+                mainAtlas = assetManager.get("my2.pack", TextureAtlas.class);
                 break;
             case GAME:
                 assetManager.load("font2.fnt", BitmapFont.class);
-                assetManager.load("my.pack", TextureAtlas.class);
+                assetManager.load("my2.pack", TextureAtlas.class);
                 assetManager.load("bg.png", Texture.class);
                 assetManager.load("music.mp3", Music.class);
                 assetManager.load("laser.wav", Sound.class);
                 assetManager.load("CollapseNorm.wav", Sound.class);
                 assetManager.finishLoading();
-                mainAtlas = assetManager.get("my.pack", TextureAtlas.class);
+                mainAtlas = assetManager.get("my2.pack", TextureAtlas.class);
                 break;
         }
     }

@@ -12,6 +12,9 @@ public class AsteroidModel extends AbstractSpaceObjectModel implements Poolable 
     private float angle;
     private float angularSpeed;
 
+    private float textureRegionWidth;
+    private float textureRegionHeight;
+
     public AsteroidModel(TextureRegion texture) {
         this.texture = texture;
         this.position = new Vector2(0, 0);
@@ -21,7 +24,9 @@ public class AsteroidModel extends AbstractSpaceObjectModel implements Poolable 
         this.angularSpeed = 0;
         this.hpMax = 0;
         this.hp = 0;
-        this.hitArea = new Circle(position.x, position.y, 28 * scale);
+        this.textureRegionWidth = (float) texture.getRegionWidth();
+        this.textureRegionHeight = (float) texture.getRegionHeight();
+        this.hitArea = new Circle(position.x, position.y,  (textureRegionWidth / 2 - 16) * scale);
         this.damageReaction = 0.0f;
         this.active = false;
     }
@@ -31,7 +36,20 @@ public class AsteroidModel extends AbstractSpaceObjectModel implements Poolable 
         if (damageReaction > 0.01f) {
             batch.setColor(1.0f, 1.0f - damageReaction, 1.0f - damageReaction, 1.0f);
         }
-        batch.draw(texture, position.x - 32, position.y - 32, 32, 32, 64, 64, scale, scale, angle);
+
+        batch.draw(
+            texture,
+            position.x - textureRegionWidth / 2,
+            position.y - textureRegionHeight / 2,
+            textureRegionWidth / 2,
+            textureRegionHeight / 2,
+            textureRegionWidth,
+            textureRegionHeight,
+            scale,
+            scale,
+            angle
+        );
+
         if (damageReaction > 0.01f) {
             batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         }
@@ -62,7 +80,7 @@ public class AsteroidModel extends AbstractSpaceObjectModel implements Poolable 
         this.hp = this.hpMax;
         this.active = true;
         this.scale = r;
-        this.hitArea.radius = 28.0f * this.scale;
+        this.hitArea.radius = (textureRegionWidth / 2 - 16) * this.scale;
         this.damageReaction = 0.0f;
     }
 }

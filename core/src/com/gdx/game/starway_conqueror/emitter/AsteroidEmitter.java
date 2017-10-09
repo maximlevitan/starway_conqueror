@@ -61,7 +61,7 @@ public class AsteroidEmitter extends ObjectPool<AsteroidModel> {
         int hpMax = MathUtils.random(info.getAsteroidHpMin(), info.getAsteroidHpMax());
         int delta = info.getAsteroidHpMax() - info.getAsteroidHpMin();
         int delta2 = hpMax - info.getAsteroidHpMin();
-        float r = 0.5f + 1.5f * ((float)delta2 / (float)delta);
+        float r = 0.2f + 0.4f * ((float)delta2 / (float)delta);
         a.activate(x, y, vx, vy, hpMax, r);
     }
 }

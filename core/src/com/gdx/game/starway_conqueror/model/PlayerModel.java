@@ -30,6 +30,10 @@ public class PlayerModel extends ShipModel {
 
     private StringBuilder hudStringHelper;
 
+    private float textureRegionWidth;
+    private float textureRegionHeight;
+    private float scale;
+
     public int getLives() {
         return lives;
     }
@@ -55,7 +59,10 @@ public class PlayerModel extends ShipModel {
         this.lives = 3;
         this.redHpRegion = new TextureRegion(textureHP, 0, 32, 224, 32);
         this.greenHpRegion = new TextureRegion(textureHP, 0, 0, 224, 32);
-        this.hitArea = new Circle(position, 24);
+        this.textureRegionWidth = (float) texture.getRegionWidth();
+        this.textureRegionHeight = (float) texture.getRegionHeight();
+        this.scale = 0.3f;
+        this.hitArea = new Circle(position, (textureRegionWidth / 2 - 16) * scale);
         this.hudStringHelper = new StringBuilder(50);
         this.score = 0;
         this.money = 0;
@@ -68,7 +75,21 @@ public class PlayerModel extends ShipModel {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(texture, position.x - 32, position.y - 32, 32, 32, 64, 64, 1, 1, velocity.y / 30.0f);
+        float textureHeight = (float) texture.getRegionHeight();
+        float textureWidth = (float) texture.getRegionWidth();
+
+        batch.draw(
+            texture,
+            position.x - textureRegionWidth / 2,
+            position.y - textureRegionHeight / 2,
+            textureRegionWidth / 2,
+            textureRegionHeight / 2,
+            textureRegionWidth,
+            textureRegionHeight,
+            scale,
+            scale,
+            velocity.y / 30.0f
+        );
     }
 
     public void renderHUD(SpriteBatch batch, BitmapFont fnt, float x, float y) {
@@ -125,28 +146,34 @@ public class PlayerModel extends ShipModel {
         }
         damageReaction -= dt * 2.0f;
         if (damageReaction < 0.0f) damageReaction = 0.0f;
-        if (position.x < 32) {
-            position.x = 32;
+
+        float scaledHalfShipWidth = textureRegionWidth / 2 * scale;
+        float scaledHalfShipHeight = textureRegionHeight / 2 * scale;
+
+        if (position.x < scaledHalfShipWidth) {
+            position.x = scaledHalfShipWidth;
             if (velocity.x < 0) velocity.x = 0;
         }
-        if (position.x > ApplicationController.SCREEN_WIDTH - 32) {
-            position.x = ApplicationController.SCREEN_WIDTH - 32;
+        if (position.x > ApplicationController.SCREEN_WIDTH - scaledHalfShipWidth) {
+            position.x = ApplicationController.SCREEN_WIDTH - scaledHalfShipWidth;
             if (velocity.x > 0) velocity.x = 0;
         }
-        if (position.y < 32) {
-            position.y = 32;
+        if (position.y < scaledHalfShipHeight) {
+            position.y = scaledHalfShipHeight;
             if (velocity.y < 0) velocity.y = 0;
         }
-        if (position.y > ApplicationController.SCREEN_HEIGHT - 32) {
-            position.y = ApplicationController.SCREEN_HEIGHT - 32;
+        if (position.y > ApplicationController.SCREEN_HEIGHT - scaledHalfShipHeight) {
+            position.y = ApplicationController.SCREEN_HEIGHT - scaledHalfShipHeight;
             if (velocity.y > 0) velocity.y = 0;
         }
+
         position.mulAdd(velocity, dt);
         hitArea.setPosition(position);
         velocity.scl(0.95f);
         if (velocity.x > 20.0f) {
-            float size = velocity.len() / 120.0f;
-            game.getParticleEmitter().setup(position.x - 24, position.y, -MathUtils.random(5.0f, 20.0f), MathUtils.random(-24.0f, 24.0f), 0.5f, size, 0.6f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+            float size = velocity.len() / 120.0f * 1.5f;
+            float delta = scaledHalfShipWidth;
+            game.getParticleEmitter().setup(position.x - delta, position.y, -MathUtils.random(5.0f, 20.0f), MathUtils.random(-4.0f, 4.0f), 0.5f, size, 0.6f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         }
     }
 

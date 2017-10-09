@@ -100,13 +100,13 @@ public class GameScreen implements Screen {
         atlas = ResourceManager.getInstance().mainAtlas;
         backgroundModel = new BackgroundModel(atlas.findRegion("star16"));
         fnt = ResourceManager.getInstance().assetManager.get("font2.fnt", BitmapFont.class);
-        playerModel = new PlayerModel(this, atlas.findRegion("ship64"), atlas.findRegion("hpBar"), atlas.findRegion("joystick"), ResourceManager.getInstance().assetManager.get("laser.wav", Sound.class), new Vector2(100, 328), new Vector2(0.0f, 0.0f), 800.0f);
-        asteroidEmitter = new AsteroidEmitter(this, atlas.findRegion("asteroid64"), 20, 0.4f);
+        playerModel = new PlayerModel(this, atlas.findRegion("ship256"), atlas.findRegion("hpBar"), atlas.findRegion("joystick"), ResourceManager.getInstance().assetManager.get("laser.wav", Sound.class), new Vector2(100, 328), new Vector2(0.0f, 0.0f), 800.0f);
+        asteroidEmitter = new AsteroidEmitter(this, atlas.findRegion("asteroid256"), 10, 0.4f);
         bulletEmitter = new BulletEmitter(atlas.findRegion("bullets36"), 100);
         powerUpsEmitter = new PowerUpsEmitter(atlas.findRegion("powerUps"));
         particleEmitter = new ParticleEmitter(atlas.findRegion("star16"));
         boomEmitter = new BoomEmitter(atlas.findRegion("explosion64"), ResourceManager.getInstance().assetManager.get("CollapseNorm.wav", Sound.class));
-        botEmitter = new BotEmitter(this, atlas.findRegion("ufo"), 10, 1.0f);
+        botEmitter = new BotEmitter(this, atlas.findRegion("enemy256"), 8, 1.0f);
         music = ResourceManager.getInstance().assetManager.get("music.mp3", Music.class);
         music.setLooping(true);
         loadFullGameInfo();

@@ -16,6 +16,10 @@ public class BotModel extends ShipModel implements Poolable {
     private float timePerFrame;
     private Route route;
 
+    private float textureRegionWidth;
+    private float textureRegionHeight;
+    private float scale;
+
     public BotModel(GameScreen game, TextureRegion texture) {
         this.game = game;
         this.texture = texture;
@@ -26,15 +30,18 @@ public class BotModel extends ShipModel implements Poolable {
         this.fireRate = 0;
         this.hpMax = 0;
         this.hp = this.hpMax;
-        this.hitArea = new Circle(position, 28);
+        this.textureRegionWidth = (float) texture.getRegionWidth();
+        this.textureRegionHeight = (float) texture.getRegionHeight();
+        this.scale = 0.3f;
+        this.hitArea = new Circle(position, (textureRegionWidth / 2 - 16) * scale);
         this.weaponDirection = new Vector2(-1.0f, 0.0f);
         this.isPlayer = false;
-        this.maxFrames = 4;
+        this.maxFrames = 1;
         this.timePerFrame = 0.1f;
         this.time = MathUtils.random(0.0f, maxFrames * timePerFrame);
         this.frames = new TextureRegion[maxFrames];
         for (int i = 0; i < maxFrames; i++) {
-            frames[i] = new TextureRegion(texture, i * 64, 0, 64, 64);
+            frames[i] = new TextureRegion(texture, i * (int) textureRegionWidth, 0, (int) textureRegionWidth, (int) textureRegionHeight);
         }
     }
 
@@ -45,7 +52,20 @@ public class BotModel extends ShipModel implements Poolable {
         }
         int k = (int) (time / timePerFrame);
         if (k > maxFrames - 1) k = maxFrames - 1;
-        batch.draw(frames[k], position.x - 32, position.y - 32);
+
+        batch.draw(
+            frames[k],
+            position.x - textureRegionWidth / 2,
+            position.y - textureRegionHeight / 2,
+            textureRegionWidth / 2,
+            textureRegionHeight / 2,
+            textureRegionWidth,
+            textureRegionHeight,
+            0.3f,
+            0.3f,
+            0
+        );
+
         if (damageReaction > 0.01f) {
             batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         }
@@ -78,7 +98,7 @@ public class BotModel extends ShipModel implements Poolable {
     public void activate(Route route) {
         position.set(route.getInitialPosition());
         fireRate = 1.0f;
-        hitArea.setRadius(28);
+        hitArea.setRadius((textureRegionWidth / 2 - 16) * scale);
         hpMax = 15;
         active = true;
         hp = hpMax;
