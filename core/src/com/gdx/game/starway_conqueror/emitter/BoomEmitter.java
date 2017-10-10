@@ -4,22 +4,30 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.gdx.game.starway_conqueror.manager.ResourceManager;
 import com.gdx.game.starway_conqueror.model.BoomModel;
 
 public class BoomEmitter {
+
     private BoomModel[] booms;
     private Sound boomSound;
 
-    public BoomEmitter(TextureRegion texture, Sound boomSound) {
+    public BoomEmitter() {
         booms = new BoomModel[50];
-        TextureRegion[][] regions = texture.split(64, 64);
+
+        TextureRegion[][] regions = ResourceManager.getInstance()
+            .getAtlasRegion("my2.pack", "explosion64")
+            .split(64, 64);
+
         TextureRegion[] result = new TextureRegion[regions[0].length * regions.length];
-        this.boomSound = boomSound;
+        this.boomSound = ResourceManager.getInstance().getSound("CollapseNorm.wav");
+
         for (int i = 0, n = 0; i < regions.length; i++) {
             for (int j = 0; j < regions[0].length; j++, n++) {
                 result[n] = regions[i][j];
             }
         }
+
         for (int i = 0; i < booms.length; i++) {
             booms[i] = new BoomModel(result);
         }
@@ -54,4 +62,5 @@ public class BoomEmitter {
     public void dispose() {
         boomSound.dispose();
     }
+
 }

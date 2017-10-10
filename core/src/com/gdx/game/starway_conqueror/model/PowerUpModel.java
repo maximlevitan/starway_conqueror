@@ -4,7 +4,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class PowerUpModel {
+
     public enum Type {
+
         MONEY10(0), MONEY25(1), MONEY50(2), MEDKIT(3);
 
         private int number;
@@ -16,6 +18,7 @@ public class PowerUpModel {
         Type(int number) {
             this.number = number;
         }
+
     }
 
     private Vector2 position;
@@ -82,4 +85,5 @@ public class PowerUpModel {
                 break;
         }
     }
+
 }

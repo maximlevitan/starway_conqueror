@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class BoomModel {
+
     private TextureRegion[] frames;
     private Vector2 position;
     private boolean active;
@@ -26,7 +27,18 @@ public class BoomModel {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(frames[(int) (time / timePerFrame)], position.x - 32, position.y - 32, 32, 32, 64, 64, 2.5f, 2.5f, angle);
+        batch.draw(
+            frames[(int) (time / timePerFrame)],
+            position.x - 32,
+            position.y - 32,
+            32,
+            32,
+            64,
+            64,
+            2.5f,
+            2.5f,
+            angle
+        );
     }
 
     public void update(float dt) {
@@ -42,4 +54,5 @@ public class BoomModel {
         this.position.set(position);
         this.angle = (float)Math.random() * 360.0f;
     }
+
 }

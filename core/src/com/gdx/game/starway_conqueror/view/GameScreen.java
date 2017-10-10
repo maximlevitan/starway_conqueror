@@ -4,12 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+
 import com.gdx.game.starway_conqueror.manager.ResourceManager;
 import com.gdx.game.starway_conqueror.model.AsteroidModel;
 import com.gdx.game.starway_conqueror.emitter.AsteroidEmitter;
@@ -26,16 +24,14 @@ import com.gdx.game.starway_conqueror.model.PowerUpModel;
 import com.gdx.game.starway_conqueror.emitter.PowerUpsEmitter;
 import com.gdx.game.starway_conqueror.application.ApplicationController;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameScreen implements Screen {
+
     private ApplicationController game;
 
     private SpriteBatch batch;
-    private BitmapFont fnt;
+    private ResourceManager resourceManager;
     private BackgroundModel backgroundModel;
     private PlayerModel playerModel;
     private AsteroidEmitter asteroidEmitter;
@@ -44,7 +40,6 @@ public class GameScreen implements Screen {
     private ParticleEmitter particleEmitter;
     private BoomEmitter boomEmitter;
     private BotEmitter botEmitter;
-    private TextureAtlas atlas;
     private Music music;
     private int level;
     private int maxLevels;
@@ -52,6 +47,8 @@ public class GameScreen implements Screen {
     private float currentLevelTime;
 
     List<LevelInfoModel> levels;
+
+    private final Vector2 collisionHelper = new Vector2(0, 0);
 
     public LevelInfoModel getCurrentLevelInfo() {
         return levels.get(level - 1);
@@ -70,61 +67,52 @@ public class GameScreen implements Screen {
     }
 
     public void loadFullGameInfo() {
-        levels = new ArrayList<LevelInfoModel>();
-        BufferedReader br = null;
-        try {
-            br = Gdx.files.internal("leveldata.csv").reader(8192);
-            br.readLine();
-            String str;
-            while ((str = br.readLine()) != null) {
-                String[] arr = str.split("\\t");
-                LevelInfoModel levelInfoModel = new LevelInfoModel(Integer.parseInt(arr[0]), Float.parseFloat(arr[1]),
-                        Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Float.parseFloat(arr[4])
-                        , Float.parseFloat(arr[5]));
-                levels.add(levelInfoModel);
-            }
-            maxLevels = levels.size();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        levels = resourceManager.loadInternalFileData("leveldata.csv", LevelInfoModel.class);
+
+        maxLevels = levels.size();
     }
 
     public GameScreen(ApplicationController game, SpriteBatch batch) {
         this.game = game;
         this.batch = batch;
+        this.resourceManager = ResourceManager.getInstance();
     }
 
     @Override
     public void show() {
-        ResourceManager.getInstance().loadAssets(ScreenType.GAME);
-        atlas = ResourceManager.getInstance().mainAtlas;
-        backgroundModel = new BackgroundModel(atlas.findRegion("star16"));
-        fnt = ResourceManager.getInstance().assetManager.get("font2.fnt", BitmapFont.class);
-        playerModel = new PlayerModel(this, atlas.findRegion("ship256"), atlas.findRegion("hpBar"), atlas.findRegion("joystick"), ResourceManager.getInstance().assetManager.get("laser.wav", Sound.class), new Vector2(100, 328), new Vector2(0.0f, 0.0f), 800.0f);
-        asteroidEmitter = new AsteroidEmitter(this, atlas.findRegion("asteroid256"), 10, 0.4f);
-        bulletEmitter = new BulletEmitter(atlas.findRegion("bullets36"), 100);
-        powerUpsEmitter = new PowerUpsEmitter(atlas.findRegion("powerUps"));
-        particleEmitter = new ParticleEmitter(atlas.findRegion("star16"));
-        boomEmitter = new BoomEmitter(atlas.findRegion("explosion64"), ResourceManager.getInstance().assetManager.get("CollapseNorm.wav", Sound.class));
-        botEmitter = new BotEmitter(this, atlas.findRegion("enemy256"), 8, 1.0f);
-        music = ResourceManager.getInstance().assetManager.get("music.mp3", Music.class);
+        ResourceManager.getInstance().loadScreenAssetsByType(ScreenType.GAME);
+
+        backgroundModel = new BackgroundModel();
+        playerModel = new PlayerModel(this, new Vector2(100, 328), new Vector2(0.0f, 0.0f), 800.0f);
+        asteroidEmitter = new AsteroidEmitter(this, 10, 0.4f);
+        bulletEmitter = new BulletEmitter(100);
+        powerUpsEmitter = new PowerUpsEmitter();
+        particleEmitter = new ParticleEmitter();
+        boomEmitter = new BoomEmitter();
+        botEmitter = new BotEmitter(this, 8, 1.0f);
+        music = resourceManager.assetManager.get("music.mp3", Music.class);
         music.setLooping(true);
+
         loadFullGameInfo();
         level = 1;
         currentLevelTime = 0.0f;
         timePerLevel = 60.0f;
-        // music.play();
+
+        // resourceManager.getMusic("music.mp3").play();
     }
 
     @Override
     public void render(float delta) {
         update(delta);
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         // Matrix4 m4 = new Matrix4();
         // m4.setToTranslationAndScaling(-1f, -1f, 0, 2.0f / 1280.0f, 2.0f / 720.0f, 0.0f);
         batch.setProjectionMatrix(game.getCamera().combined);
         // batch.setProjectionMatrix(m4);
+
         batch.begin();
         backgroundModel.render(batch);
         playerModel.render(batch);
@@ -134,8 +122,8 @@ public class GameScreen implements Screen {
         powerUpsEmitter.render(batch);
         boomEmitter.render(batch);
         particleEmitter.render(batch);
-        playerModel.renderHUD(batch, fnt, 20, 668);
-        fnt.draw(batch, "LEVEL: " + level, 600, 680);
+        playerModel.renderHUD(batch, 20, 668);
+        resourceManager.getFont("font2.fnt").draw(batch, "LEVEL: " + level, 600, 680);
         batch.end();
     }
 
@@ -153,7 +141,9 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             game.setScreen(game.getMenuScreen());
         }
+
         updateLevel(dt);
+
         backgroundModel.update(dt, playerModel.getVelocity());
         playerModel.update(dt);
         asteroidEmitter.update(dt);
@@ -161,20 +151,21 @@ public class GameScreen implements Screen {
         bulletEmitter.update(dt);
         powerUpsEmitter.update(dt);
         particleEmitter.update(dt);
+
         checkCollision();
+
         boomEmitter.update(dt);
+
         asteroidEmitter.checkPool();
         botEmitter.checkPool();
         bulletEmitter.checkPool();
         particleEmitter.checkPool();
     }
 
-    private final Vector2 collisionHelper = new Vector2(0, 0);
-
     public void checkCollision() {
         for (int i = 0; i < bulletEmitter.getActiveList().size(); i++) {
             BulletModel b = bulletEmitter.getActiveList().get(i);
-            if (b.isPlayersBullet()) {
+            if (b.isPlayerBullet()) {
                 for (int j = 0; j < asteroidEmitter.getActiveList().size(); j++) {
                     AsteroidModel a = asteroidEmitter.getActiveList().get(j);
                     if (a.getHitArea().contains(b.getPosition())) {
@@ -262,4 +253,5 @@ public class GameScreen implements Screen {
     public void dispose() {
         ResourceManager.getInstance().clear();
     }
+
 }

@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MyInputProcessor implements InputProcessor {
+
     class TouchInfo {
+
         int x;
         int y;
         boolean touched;
@@ -19,6 +21,7 @@ public class MyInputProcessor implements InputProcessor {
             this.y = y;
             this.touched = touched;
         }
+
     }
 
     private ApplicationController game;
@@ -27,6 +30,7 @@ public class MyInputProcessor implements InputProcessor {
 
     public MyInputProcessor(ApplicationController game) {
         this.game = game;
+
         for (int i = 0; i < 5; i++) {
             map.put(i, new TouchInfo());
         }
@@ -57,6 +61,7 @@ public class MyInputProcessor implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         game.getViewport().unproject(temp.set(screenX, screenY));
         map.get(pointer).set((int)temp.x, (int)temp.y, true);
+
         return false;
     }
 
@@ -65,6 +70,7 @@ public class MyInputProcessor implements InputProcessor {
         map.get(pointer).x = 0;
         map.get(pointer).y = 0;
         map.get(pointer).touched = false;
+
         return false;
     }
 
@@ -72,6 +78,7 @@ public class MyInputProcessor implements InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         game.getViewport().unproject(temp.set(screenX, screenY));
         map.get(pointer).set((int)temp.x, (int)temp.y, true);
+
         return false;
     }
 
@@ -96,11 +103,13 @@ public class MyInputProcessor implements InputProcessor {
             if (o.getValue().touched) {
                 int id = o.getKey();
                 TouchInfo t = o.getValue();
+
                 if (t.x > x && t.x < x + w && t.y > y && t.y < y + h) {
                     return id;
                 }
             }
         }
+
         return -1;
     }
 
@@ -113,4 +122,5 @@ public class MyInputProcessor implements InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 }

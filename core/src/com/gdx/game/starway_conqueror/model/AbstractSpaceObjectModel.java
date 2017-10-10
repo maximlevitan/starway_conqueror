@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.gdx.game.starway_conqueror.view.GameScreen;
 
 public abstract class AbstractSpaceObjectModel {
+
     protected GameScreen game;
 
     protected TextureRegion texture;
@@ -61,4 +62,5 @@ public abstract class AbstractSpaceObjectModel {
     public void deactivate() {
         this.active = false;
     }
+
 }

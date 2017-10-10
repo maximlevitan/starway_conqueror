@@ -1,6 +1,7 @@
 package com.gdx.game.starway_conqueror.model;
 
 public class LevelInfoModel {
+
     private int level;
     private float asteroidGenerationTime;
     private int asteroidHpMin;
@@ -32,12 +33,15 @@ public class LevelInfoModel {
         return asteroidSpeedMax;
     }
 
-    public LevelInfoModel(int level, float asteroidGenerationTime, int asteroidHpMin, int asteroidHpMax, float asteroidSpeedMin, float asteroidSpeedMax) {
-        this.level = level;
-        this.asteroidGenerationTime = asteroidGenerationTime;
-        this.asteroidHpMin = asteroidHpMin;
-        this.asteroidHpMax = asteroidHpMax;
-        this.asteroidSpeedMin = asteroidSpeedMin;
-        this.asteroidSpeedMax = asteroidSpeedMax;
+    public LevelInfoModel(String data) {
+        String[] arrData = data.split("\\t");
+
+        this.level = Integer.parseInt(arrData[0]);
+        this.asteroidGenerationTime = Float.parseFloat(arrData[1]);
+        this.asteroidHpMin = Integer.parseInt(arrData[2]);
+        this.asteroidHpMax = Integer.parseInt(arrData[3]);
+        this.asteroidSpeedMin = Float.parseFloat(arrData[4]);
+        this.asteroidSpeedMax = Float.parseFloat(arrData[5]);
     }
+
 }

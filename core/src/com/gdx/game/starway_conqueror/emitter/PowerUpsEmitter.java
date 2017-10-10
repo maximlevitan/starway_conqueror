@@ -2,9 +2,11 @@ package com.gdx.game.starway_conqueror.emitter;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.gdx.game.starway_conqueror.manager.ResourceManager;
 import com.gdx.game.starway_conqueror.model.PowerUpModel;
 
 public class PowerUpsEmitter {
+
     private PowerUpModel[] powerUps;
     private TextureRegion[][] textureRegion;
 
@@ -12,8 +14,10 @@ public class PowerUpsEmitter {
         return powerUps;
     }
 
-    public PowerUpsEmitter(TextureRegion textureRegion) {
-        this.textureRegion = textureRegion.split(32, 32);
+    public PowerUpsEmitter() {
+        this.textureRegion = ResourceManager.getInstance()
+            .getAtlasRegion("my2.pack", "powerUps").split(32, 32);
+
         this.powerUps = new PowerUpModel[50];
         for (int i = 0; i < powerUps.length; i++) {
             powerUps[i] = new PowerUpModel();
@@ -23,7 +27,11 @@ public class PowerUpsEmitter {
     public void render(SpriteBatch batch) {
         for (int i = 0; i < powerUps.length; i++) {
             if (powerUps[i].isActive()) {
-                batch.draw(textureRegion[0][powerUps[i].getType().getNumber()], powerUps[i].getPosition().x - 16, powerUps[i].getPosition().y - 16);
+                batch.draw(
+                    textureRegion[0][powerUps[i].getType().getNumber()],
+                    powerUps[i].getPosition().x - 16,
+                    powerUps[i].getPosition().y - 16
+                );
             }
         }
     }
@@ -47,4 +55,5 @@ public class PowerUpsEmitter {
             }
         }
     }
+
 }

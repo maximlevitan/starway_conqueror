@@ -3,12 +3,14 @@ package com.gdx.game.starway_conqueror.emitter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.gdx.game.starway_conqueror.manager.ResourceManager;
 import com.gdx.game.starway_conqueror.model.AsteroidModel;
 import com.gdx.game.starway_conqueror.model.LevelInfoModel;
 import com.gdx.game.starway_conqueror.component.ObjectPool;
 import com.gdx.game.starway_conqueror.view.GameScreen;
 
 public class AsteroidEmitter extends ObjectPool<AsteroidModel> {
+
     private GameScreen gameScreen;
     private TextureRegion asteroidTexture;
     private float generationTime;
@@ -23,10 +25,10 @@ public class AsteroidEmitter extends ObjectPool<AsteroidModel> {
         return new AsteroidModel(asteroidTexture);
     }
 
-    public AsteroidEmitter(GameScreen gameScreen, TextureRegion asteroidTexture, int size, float generationTime) {
+    public AsteroidEmitter(GameScreen gameScreen, int size, float generationTime) {
         super();
         this.gameScreen = gameScreen;
-        this.asteroidTexture = asteroidTexture;
+        this.asteroidTexture = ResourceManager.getInstance().getAtlasRegion("my2.pack", "asteroid256");
         for (int i = 0; i < size; i++) {
             freeList.add(newObject());
         }
@@ -64,4 +66,5 @@ public class AsteroidEmitter extends ObjectPool<AsteroidModel> {
         float r = 0.2f + 0.4f * ((float)delta2 / (float)delta);
         a.activate(x, y, vx, vy, hpMax, r);
     }
+
 }

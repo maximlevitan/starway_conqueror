@@ -7,21 +7,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.gdx.game.starway_conqueror.view.GameScreen;
-import com.gdx.game.starway_conqueror.view.MenuScreen;
+import com.gdx.game.starway_conqueror.view.*;
 import com.gdx.game.starway_conqueror.processor.MyInputProcessor;
 
-// Таблица результатов во внешнем файле
-// + AssetManager
-// + Bots Routes + AI
-// Save Game
-//
-// WeaponsShop
-// PowerUps
-// <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-// <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
 public class ApplicationController extends Game {
+
 	public static final int SCREEN_WIDTH = 1280;
 	public static final int SCREEN_HEIGHT = 720;
 
@@ -79,4 +69,5 @@ public class ApplicationController extends Game {
 	public void dispose() {
 		batch.dispose();
 	}
+
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ObjectPool<T extends Poolable> {
+
     protected List<T> activeList;
     protected List<T> freeList;
 
@@ -29,6 +30,7 @@ public abstract class ObjectPool<T extends Poolable> {
     public ObjectPool(int size) {
         this.activeList = new ArrayList<T>();
         this.freeList = new ArrayList<T>();
+
         for (int i = 0; i < size; i++) {
             freeList.add(newObject());
         }
@@ -38,8 +40,10 @@ public abstract class ObjectPool<T extends Poolable> {
         if (freeList.size() == 0) {
             freeList.add(newObject());
         }
+
         T temp = freeList.remove(freeList.size() - 1);
         activeList.add(temp);
+
         return temp;
     }
 
@@ -50,4 +54,5 @@ public abstract class ObjectPool<T extends Poolable> {
             }
         }
     }
+
 }

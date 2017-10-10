@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Route {
+
     private List<Vector2> velocityList;
     private List<Integer> points;
     private Vector2 initialPosition;
@@ -25,12 +26,15 @@ public class Route {
                 return velocityList.get(i);
             }
         }
+
         throw new RuntimeException("Route Exception");
     }
 
     public Route addPoint(int nextPoint, Vector2 velocity) {
         points.add(nextPoint);
         velocityList.add(velocity);
+
         return this;
     }
+
 }

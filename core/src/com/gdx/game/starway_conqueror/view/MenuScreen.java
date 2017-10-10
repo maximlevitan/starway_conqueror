@@ -14,13 +14,13 @@ import com.gdx.game.starway_conqueror.processor.MyInputProcessor;
 import com.gdx.game.starway_conqueror.application.ApplicationController;
 
 public class MenuScreen implements Screen {
+
     private ApplicationController game;
 
     private SpriteBatch batch;
+    private ResourceManager resourceManager;
     private BackgroundModel backgroundModel;
     private Vector2 emptyVelocity = new Vector2(0, 0);
-    private TextureRegion texStart;
-    private TextureRegion texExit;
     private Rectangle rectStart;
     private Rectangle rectExit;
 
@@ -29,30 +29,37 @@ public class MenuScreen implements Screen {
     public MenuScreen(ApplicationController game, SpriteBatch batch) {
         this.game = game;
         this.batch = batch;
+        this.resourceManager = ResourceManager.getInstance();
     }
 
     @Override
     public void show() {
-        ResourceManager.getInstance().loadAssets(ScreenType.MENU);
-        TextureAtlas atlas = ResourceManager.getInstance().mainAtlas;
-        backgroundModel = new BackgroundModel(atlas.findRegion("star16"));
-        texExit = atlas.findRegion("btExit");
-        texStart = atlas.findRegion("btPlay");
-        rectStart = new Rectangle(256, 232, texStart.getRegionWidth(), texStart.getRegionHeight());
-        rectExit = new Rectangle(1280 - 512, 232, texExit.getRegionWidth(), texExit.getRegionHeight());
+        ResourceManager.getInstance().loadScreenAssetsByType(ScreenType.MENU);
+
+        backgroundModel = new BackgroundModel();
+
+        TextureAtlas.AtlasRegion start = resourceManager.getAtlasRegion("my2.pack", "btPlay");
+        TextureAtlas.AtlasRegion exit = resourceManager.getAtlasRegion("my2.pack", "btExit");
+
+        rectStart = new Rectangle(256, 232, start.getRegionWidth(), start.getRegionHeight());
+        rectExit = new Rectangle(1280 - 512, 232, exit.getRegionWidth(), exit.getRegionHeight());
+
         mip = (MyInputProcessor) Gdx.input.getInputProcessor();
     }
 
     @Override
     public void render(float delta) {
         update(delta);
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         batch.setProjectionMatrix(((ApplicationController) game).getCamera().combined);
+
         batch.begin();
         backgroundModel.render(batch);
-        batch.draw(texStart, rectStart.x, rectStart.y);
-        batch.draw(texExit, rectExit.x, rectExit.y);
+        batch.draw(resourceManager.getAtlasRegion("my2.pack", "btPlay"), rectStart.x, rectStart.y);
+        batch.draw(resourceManager.getAtlasRegion("my2.pack", "btExit"), rectExit.x, rectExit.y);
         batch.end();
     }
 
@@ -90,4 +97,5 @@ public class MenuScreen implements Screen {
     public void dispose() {
         ResourceManager.getInstance().clear();
     }
+
 }

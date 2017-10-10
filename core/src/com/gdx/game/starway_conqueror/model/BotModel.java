@@ -10,6 +10,7 @@ import com.gdx.game.starway_conqueror.component.Route;
 import com.gdx.game.starway_conqueror.view.GameScreen;
 
 public class BotModel extends ShipModel implements Poolable {
+
     private TextureRegion[] frames;
     private int maxFrames;
     private float time;
@@ -40,8 +41,15 @@ public class BotModel extends ShipModel implements Poolable {
         this.timePerFrame = 0.1f;
         this.time = MathUtils.random(0.0f, maxFrames * timePerFrame);
         this.frames = new TextureRegion[maxFrames];
+
         for (int i = 0; i < maxFrames; i++) {
-            frames[i] = new TextureRegion(texture, i * (int) textureRegionWidth, 0, (int) textureRegionWidth, (int) textureRegionHeight);
+            frames[i] = new TextureRegion(
+                texture,
+                i * (int) textureRegionWidth,
+                0,
+                (int) textureRegionWidth,
+                (int) textureRegionHeight
+            );
         }
     }
 
@@ -77,12 +85,16 @@ public class BotModel extends ShipModel implements Poolable {
         if (time > maxFrames * timePerFrame) {
             time = 0.0f;
         }
+
         pressFire(dt);
+
         damageReaction -= dt * 2.0f;
         if (damageReaction < 0.0f) damageReaction = 0.0f;
+
         if (position.x < -100) {
             deactivate();
         }
+
         //velocity.set(-120, 0);
         velocity.set(route.getMyVelocity((int)position.x));
         position.mulAdd(velocity, dt);
@@ -104,4 +116,5 @@ public class BotModel extends ShipModel implements Poolable {
         hp = hpMax;
         this.route = route;
     }
+
 }

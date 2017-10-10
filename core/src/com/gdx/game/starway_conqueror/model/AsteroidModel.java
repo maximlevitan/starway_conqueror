@@ -17,18 +17,19 @@ public class AsteroidModel extends AbstractSpaceObjectModel implements Poolable 
 
     public AsteroidModel(TextureRegion texture) {
         this.texture = texture;
-        this.position = new Vector2(0, 0);
-        this.velocity = new Vector2(0, 0);
-        this.scale = 0;
-        this.angle = 0;
-        this.angularSpeed = 0;
-        this.hpMax = 0;
-        this.hp = 0;
-        this.textureRegionWidth = (float) texture.getRegionWidth();
-        this.textureRegionHeight = (float) texture.getRegionHeight();
-        this.hitArea = new Circle(position.x, position.y,  (textureRegionWidth / 2 - 16) * scale);
-        this.damageReaction = 0.0f;
-        this.active = false;
+
+        position = new Vector2(0, 0);
+        velocity = new Vector2(0, 0);
+        scale = 0;
+        angle = 0;
+        angularSpeed = 0;
+        hpMax = 0;
+        hp = 0;
+        textureRegionWidth = (float) texture.getRegionWidth();
+        textureRegionHeight = (float) texture.getRegionHeight();
+        hitArea = new Circle(position.x, position.y,  (textureRegionWidth / 2 - 16) * scale);
+        damageReaction = 0.0f;
+        active = false;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.gdx.game.starway_conqueror.emitter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.gdx.game.starway_conqueror.manager.ResourceManager;
 import com.gdx.game.starway_conqueror.model.BotModel;
 import com.gdx.game.starway_conqueror.component.ObjectPool;
 import com.gdx.game.starway_conqueror.component.Route;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BotEmitter extends ObjectPool<BotModel> {
+
     private GameScreen game;
     private TextureRegion botTexture;
     private float generationTime;
@@ -23,25 +25,31 @@ public class BotEmitter extends ObjectPool<BotModel> {
         return new BotModel(game, botTexture);
     }
 
-    public BotEmitter(GameScreen game, TextureRegion botTexture, int size, float generationTime) {
+    public BotEmitter(GameScreen game, int size, float generationTime) {
         super();
+
         this.game = game;
-        this.botTexture = botTexture;
+        this.botTexture = ResourceManager.getInstance().getAtlasRegion("my2.pack", "enemy256");
+        this.generationTime = generationTime;
+        this.innerTimer = 0.0f;
+
         for (int i = 0; i < size; i++) {
             freeList.add(newObject());
         }
-        this.generationTime = generationTime;
-        this.innerTimer = 0.0f;
-        routes = new ArrayList<Route>();
+
         Route r1 = new Route(new Vector2(1400, 640));
         r1.addPoint(1500, new Vector2(-320.0f, 0.0f)).addPoint(600, new Vector2(-320.0f, -120.0f));
+
         Route r2 = new Route(new Vector2(1400, 80));
         r2.addPoint(1500, new Vector2(-320.0f, 0.0f)).addPoint(600, new Vector2(-320.0f, 120.0f));
+
         Route r3 = new Route(new Vector2(1400, 400));
         r3.addPoint(1500, new Vector2(-400.0f, 0.0f)).addPoint(600, new Vector2(-400.0f, 180.0f));
+
         Route r4 = new Route(new Vector2(1400, 320));
         r4.addPoint(1500, new Vector2(-400.0f, 0.0f)).addPoint(600, new Vector2(-400.0f, 180.0f));
 
+        routes = new ArrayList<Route>();
         routes.add(r1);
         routes.add(r2);
         routes.add(r3);
@@ -60,6 +68,7 @@ public class BotEmitter extends ObjectPool<BotModel> {
             innerTimer -= generationTime;
             setup();
         }
+
         for (int i = 0; i < activeList.size(); i++) {
             activeList.get(i).update(dt);
         }
@@ -69,4 +78,5 @@ public class BotEmitter extends ObjectPool<BotModel> {
         BotModel b = getActiveElement();
         b.activate(routes.get((int)(Math.random() * routes.size())));
     }
+
 }

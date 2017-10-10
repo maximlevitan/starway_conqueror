@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.gdx.game.starway_conqueror.component.Poolable;
 
 public class ParticleModel implements Poolable {
+
     private Vector2 position;
     private Vector2 velocity;
     private float r1, g1, b1, a1;
@@ -83,7 +84,23 @@ public class ParticleModel implements Poolable {
         size2 = 1.0f;
     }
 
-    public void init(float x, float y, float vx, float vy, float timeMax, float size1, float size2, float r1, float g1, float b1, float a1, float r2, float g2, float b2, float a2) {
+    public void init(
+        float x,
+        float y,
+        float vx,
+        float vy,
+        float timeMax,
+        float size1,
+        float size2,
+        float r1,
+        float g1,
+        float b1,
+        float a1,
+        float r2,
+        float g2,
+        float b2,
+        float a2
+    ) {
         this.position.x = x;
         this.position.y = y;
         this.velocity.x = vx;
@@ -110,8 +127,10 @@ public class ParticleModel implements Poolable {
     public void update(float dt) {
         time += dt;
         position.mulAdd(velocity, dt);
+
         if (time > timeMax) {
             deactivate();
         }
     }
+
 }

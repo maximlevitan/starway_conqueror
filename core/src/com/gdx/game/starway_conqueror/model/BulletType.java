@@ -1,6 +1,7 @@
 package com.gdx.game.starway_conqueror.model;
 
 public enum BulletType {
+
     FIREBALL(0), GREENRAY(1);
 
     private int index;
@@ -12,4 +13,5 @@ public enum BulletType {
     BulletType(int index) {
         this.index = index;
     }
+
 }

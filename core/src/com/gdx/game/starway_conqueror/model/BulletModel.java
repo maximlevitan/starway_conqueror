@@ -5,14 +5,14 @@ import com.gdx.game.starway_conqueror.component.Poolable;
 import com.gdx.game.starway_conqueror.application.ApplicationController;
 
 public class BulletModel implements Poolable {
-    private boolean isPlayersBullet;
+    private boolean isPlayerBullet;
     private Vector2 position;
     private Vector2 velocity;
     private boolean active;
     private BulletType type;
 
-    public boolean isPlayersBullet() {
-        return isPlayersBullet;
+    public boolean isPlayerBullet() {
+        return isPlayerBullet;
     }
 
     public Vector2 getPosition() {
@@ -39,7 +39,7 @@ public class BulletModel implements Poolable {
 
     public void activate(BulletType type, boolean isPlayersBullet, float x, float y, float vx, float vy) {
         this.type = type;
-        this.isPlayersBullet = isPlayersBullet;
+        this.isPlayerBullet = isPlayersBullet;
         position.set(x, y);
         velocity.set(vx, vy);
         active = true;
