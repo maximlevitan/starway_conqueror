@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
@@ -18,6 +19,7 @@ public class PlayerModel extends ShipModel {
 
     private TextureRegion redHpRegion;
     private TextureRegion greenHpRegion;
+    private BitmapFont font;
     private int lives;
 
     private JoystickModel joystickModel;
@@ -34,6 +36,8 @@ public class PlayerModel extends ShipModel {
     private float textureRegionWidth;
     private float textureRegionHeight;
     private float scale;
+
+    private ResourceManager resourceManager;
 
     public int getLives() {
         return lives;
@@ -53,8 +57,7 @@ public class PlayerModel extends ShipModel {
         this.velocity = velocity;
         this.enginePower = engine;
 
-        ResourceManager resourceManager = ResourceManager.getInstance();
-
+        resourceManager = ResourceManager.getInstance();
         texture = resourceManager.getAtlasRegion("my2.pack", "ship256");
         currentFire = 0.0f;
         fireRate = 0.1f;
@@ -94,6 +97,8 @@ public class PlayerModel extends ShipModel {
             this,
             resourceManager.getAtlasRegion("my2.pack", "joystick")
         );
+
+        font = resourceManager.getFont("font2.fnt");
     }
 
     @Override
@@ -144,12 +149,10 @@ public class PlayerModel extends ShipModel {
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         hudStringHelper.setLength(0);
         hudStringHelper.append("x").append(lives);
-        ResourceManager.getInstance().getFont("font2.fnt")
-            .draw(batch, hudStringHelper, x + 224, y + 22);
+        font.draw(batch, hudStringHelper, x + 224, y + 22);
         hudStringHelper.setLength(0);
         hudStringHelper.append("Score: ").append(score);
-        ResourceManager.getInstance().getFont("font2.fnt")
-            .draw(batch, hudStringHelper, x + 4, y - 4);
+        font.draw(batch, hudStringHelper, x + 4, y - 4);
         joystickModel.render(batch);
     }
 

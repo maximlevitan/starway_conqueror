@@ -20,11 +20,6 @@ public class BotEmitter extends ObjectPool<BotModel> {
     private float innerTimer;
     private List<Route> routes;
 
-    @Override
-    protected BotModel newObject() {
-        return new BotModel(game, botTexture);
-    }
-
     public BotEmitter(GameScreen game, int size, float generationTime) {
         super();
 
@@ -77,6 +72,15 @@ public class BotEmitter extends ObjectPool<BotModel> {
     public void setup() {
         BotModel b = getActiveElement();
         b.activate(routes.get((int)(Math.random() * routes.size())));
+    }
+
+    public void setGenerationTime(float generationTime) {
+        this.generationTime = generationTime;
+    }
+
+    @Override
+    protected BotModel newObject() {
+        return new BotModel(game, botTexture);
     }
 
 }

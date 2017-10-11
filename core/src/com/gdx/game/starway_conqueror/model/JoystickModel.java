@@ -22,7 +22,7 @@ public class JoystickModel {
     private float backScale = 0.7f;
 
     public float getPower() {
-        return vs.len() / 75.0f * 1.4f;
+        return vs.len() / 62.0f * 1.5f;
     }
 
     public Vector2 getNorma() {
@@ -33,11 +33,8 @@ public class JoystickModel {
         this.playerModel = playerModel;
         this.back = new TextureRegion(texture, 0, 0, 200, 200);
         this.stick = new TextureRegion(texture, 0, 200, 50, 50);
-        this.rectangle = new Rectangle(
-            50 * backScale, 50 * backScale, 200 * backScale, 200 * backScale
-        );
-
-        this.fireBtnRect = new Rectangle(1080, 100, 100, 100);
+        this.rectangle = new Rectangle(0, 0, 150 * backScale, 150 * backScale);
+        this.fireBtnRect = new Rectangle(1120, 25, 100, 100);
         this.joyCenterX = rectangle.x + rectangle.width / 2;
         this.joyCenterY = rectangle.y + rectangle.height / 2;
         this.vs = new Vector2(0, 0);
@@ -47,9 +44,9 @@ public class JoystickModel {
 
     public void render(SpriteBatch batch) {
         batch.setColor(1, 1, 1, 0.5f);
-        batch.draw(back, rectangle.x, rectangle.y, 100, 100, 200, 200, backScale, backScale, 0);
+        batch.draw(back, rectangle.x, rectangle.y, 50, 50, 200, 200, backScale, backScale, 0);
         batch.setColor(1, 1, 1, 0.7f);
-        batch.draw(stick, joyCenterX + vs.x + 5, joyCenterY + vs.y + 5);
+        batch.draw(stick, joyCenterX + vs.x + 10f * backScale, joyCenterY + vs.y + 10f * backScale);
         batch.setColor(1, 1, 1, 0.7f);
         batch.draw(stick, fireBtnRect.x, fireBtnRect.y, 100, 100);
         batch.setColor(1, 1, 1, 1);
@@ -68,8 +65,8 @@ public class JoystickModel {
             vs.x = touchX - joyCenterX;
             vs.y = touchY - joyCenterY;
 
-            if (vs.len() > 75 * backScale) {
-                vs.nor().scl(75 * backScale);
+            if (vs.len() > 62 * backScale) {
+                vs.nor().scl(62 * backScale);
             }
         }
 

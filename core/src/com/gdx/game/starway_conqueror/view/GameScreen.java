@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -41,6 +42,7 @@ public class GameScreen implements Screen {
     private BoomEmitter boomEmitter;
     private BotEmitter botEmitter;
     private Music music;
+    private BitmapFont font;
     private int level;
     private int maxLevels;
     private float timePerLevel;
@@ -82,21 +84,29 @@ public class GameScreen implements Screen {
     public void show() {
         ResourceManager.getInstance().loadScreenAssetsByType(ScreenType.GAME);
 
-        backgroundModel = new BackgroundModel();
-        playerModel = new PlayerModel(this, new Vector2(100, 328), new Vector2(0.0f, 0.0f), 800.0f);
-        asteroidEmitter = new AsteroidEmitter(this, 10, 0.4f);
-        bulletEmitter = new BulletEmitter(100);
-        powerUpsEmitter = new PowerUpsEmitter();
-        particleEmitter = new ParticleEmitter();
-        boomEmitter = new BoomEmitter();
-        botEmitter = new BotEmitter(this, 8, 1.0f);
-        music = resourceManager.assetManager.get("music.mp3", Music.class);
-        music.setLooping(true);
-
         loadFullGameInfo();
         level = 1;
         currentLevelTime = 0.0f;
         timePerLevel = 60.0f;
+
+        float asteroidGenerationTime = getCurrentLevelInfo().getAsteroidGenerationTime();
+        int startAsteroidCount = 5;
+
+        float botGenerationTime = getCurrentLevelInfo().getBotGenerationTime();
+        int startBotCount = 2;
+
+        backgroundModel = new BackgroundModel();
+        playerModel = new PlayerModel(this, new Vector2(100, 328), new Vector2(0.0f, 0.0f), 800.0f);
+        asteroidEmitter = new AsteroidEmitter(this, startAsteroidCount, asteroidGenerationTime);
+        bulletEmitter = new BulletEmitter(100);
+        powerUpsEmitter = new PowerUpsEmitter();
+        particleEmitter = new ParticleEmitter();
+        boomEmitter = new BoomEmitter();
+        botEmitter = new BotEmitter(this, startBotCount, botGenerationTime);
+
+        font = resourceManager.getFont("font2.fnt");
+        music = resourceManager.assetManager.get("music.mp3", Music.class);
+        music.setLooping(true);
 
         // resourceManager.getMusic("music.mp3").play();
     }
@@ -123,17 +133,21 @@ public class GameScreen implements Screen {
         boomEmitter.render(batch);
         particleEmitter.render(batch);
         playerModel.renderHUD(batch, 20, 668);
-        resourceManager.getFont("font2.fnt").draw(batch, "LEVEL: " + level, 600, 680);
+        font.draw(batch, "LEVEL: " + level, 600, 680);
         batch.end();
     }
 
     public void updateLevel(float dt) {
         currentLevelTime += dt;
+
         if (currentLevelTime > timePerLevel) {
             currentLevelTime = 0.0f;
             level++;
+
             if (level > maxLevels) level = maxLevels;
+
             asteroidEmitter.setGenerationTime(getCurrentLevelInfo().getAsteroidGenerationTime());
+            botEmitter.setGenerationTime(getCurrentLevelInfo().getBotGenerationTime());
         }
     }
 

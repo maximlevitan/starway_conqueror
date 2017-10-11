@@ -16,22 +16,17 @@ public class AsteroidEmitter extends ObjectPool<AsteroidModel> {
     private float generationTime;
     private float innerTimer;
 
-    public void setGenerationTime(float generationTime) {
-        this.generationTime = generationTime;
-    }
-
-    @Override
-    protected AsteroidModel newObject() {
-        return new AsteroidModel(asteroidTexture);
-    }
-
     public AsteroidEmitter(GameScreen gameScreen, int size, float generationTime) {
         super();
+
         this.gameScreen = gameScreen;
-        this.asteroidTexture = ResourceManager.getInstance().getAtlasRegion("my2.pack", "asteroid256");
+        this.asteroidTexture = ResourceManager.getInstance()
+            .getAtlasRegion("my2.pack", "asteroid256");
+
         for (int i = 0; i < size; i++) {
             freeList.add(newObject());
         }
+
         this.generationTime = generationTime;
         this.innerTimer = 0.0f;
     }
@@ -65,6 +60,15 @@ public class AsteroidEmitter extends ObjectPool<AsteroidModel> {
         int delta2 = hpMax - info.getAsteroidHpMin();
         float r = 0.2f + 0.4f * ((float)delta2 / (float)delta);
         a.activate(x, y, vx, vy, hpMax, r);
+    }
+
+    public void setGenerationTime(float generationTime) {
+        this.generationTime = generationTime;
+    }
+
+    @Override
+    protected AsteroidModel newObject() {
+        return new AsteroidModel(asteroidTexture);
     }
 
 }
