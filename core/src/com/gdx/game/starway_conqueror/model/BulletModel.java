@@ -47,7 +47,12 @@ public class BulletModel implements Poolable {
 
     public void update(float dt) {
         position.mulAdd(velocity, dt);
-        if(position.x > ApplicationController.SCREEN_WIDTH) {
+
+        if (position.x > ApplicationController.SCREEN_WIDTH
+            || position.x < 0
+            || position.y > ApplicationController.SCREEN_HEIGHT
+            || position.y < 0
+        ) {
             deactivate();
         }
     }

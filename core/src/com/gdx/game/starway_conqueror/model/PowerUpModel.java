@@ -45,7 +45,7 @@ public class PowerUpModel {
         this.velocity = new Vector2(0, 0);
         this.active = false;
         this.time = 0.0f;
-        this.maxTime = 3.0f;
+        this.maxTime = 7.0f;
     }
 
     public void update(float dt) {
@@ -61,7 +61,7 @@ public class PowerUpModel {
         this.velocity.set(MathUtils.random(-50.0f, 50.0f), MathUtils.random(-50.0f, 50.0f));
         this.type = type;
         this.time = 0.0f;
-        this.maxTime = 3.0f;
+        this.maxTime = 7.0f;
         this.active = true;
     }
 
@@ -73,12 +73,15 @@ public class PowerUpModel {
         switch (type) {
             case MONEY10:
                 hero.addMoney(10);
+                hero.addScore(100);
                 break;
             case MONEY25:
                 hero.addMoney(25);
+                hero.addScore(250);
                 break;
             case MONEY50:
                 hero.addMoney(50);
+                hero.addScore(500);
                 break;
             case MEDKIT:
                 hero.fullRepair();

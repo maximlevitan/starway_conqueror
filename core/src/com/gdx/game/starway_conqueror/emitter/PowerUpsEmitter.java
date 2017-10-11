@@ -45,7 +45,7 @@ public class PowerUpsEmitter {
     }
 
     public void makePower(float x, float y) {
-        if (Math.random() < 0.2) {
+        if (Math.random() < 0.3) {
             for (int i = 0; i < powerUps.length; i++) {
                 if (!powerUps[i].isActive()) {
                     PowerUpModel.Type t = PowerUpModel.Type.values()[(int) (Math.random() * 4)];

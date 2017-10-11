@@ -14,10 +14,6 @@ public class BoomModel {
     private float timePerFrame;
     private float angle;
 
-    public boolean isActive() {
-        return active;
-    }
-
     public BoomModel(TextureRegion[] frames) {
         this.frames = frames;
         this.position = new Vector2(0, 0);
@@ -35,8 +31,8 @@ public class BoomModel {
             32,
             64,
             64,
-            2.5f,
-            2.5f,
+            3.5f,
+            3.5f,
             angle
         );
     }
@@ -46,6 +42,10 @@ public class BoomModel {
         if (time > maxFrames * timePerFrame) {
             active = false;
         }
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     public void activate(Vector2 position) {

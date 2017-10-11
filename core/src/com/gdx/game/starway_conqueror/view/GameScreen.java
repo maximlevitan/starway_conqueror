@@ -108,7 +108,7 @@ public class GameScreen implements Screen {
         music = resourceManager.assetManager.get("music.mp3", Music.class);
         music.setLooping(true);
 
-        // resourceManager.getMusic("music.mp3").play();
+        resourceManager.getMusic("music.mp3").play();
     }
 
     @Override
@@ -178,62 +178,128 @@ public class GameScreen implements Screen {
 
     public void checkCollision() {
         for (int i = 0; i < bulletEmitter.getActiveList().size(); i++) {
-            BulletModel b = bulletEmitter.getActiveList().get(i);
-            if (b.isPlayerBullet()) {
+            BulletModel bulletModel = bulletEmitter.getActiveList().get(i);
+
+            if (bulletModel.isPlayerBullet()) {
                 for (int j = 0; j < asteroidEmitter.getActiveList().size(); j++) {
-                    AsteroidModel a = asteroidEmitter.getActiveList().get(j);
-                    if (a.getHitArea().contains(b.getPosition())) {
-                        if (a.takeDamage(1)) {
-                            playerModel.addScore(a.getHpMax() * 10);
-                            powerUpsEmitter.makePower(a.getPosition().x, a.getPosition().y);
-                            boomEmitter.setup(a.getPosition());
+                    AsteroidModel asteroidModel = asteroidEmitter.getActiveList().get(j);
+
+                    if (asteroidModel.getHitArea().contains(bulletModel.getPosition())) {
+                        if (asteroidModel.takeDamage(1)) {
+                            playerModel.addScore(asteroidModel.getHpMax() * 10);
+                            powerUpsEmitter.makePower(
+                                asteroidModel.getPosition().x,
+                                asteroidModel.getPosition().y
+                            );
+                            boomEmitter.setup(asteroidModel.getPosition());
                         }
-                        b.deactivate();
+
+                        bulletModel.deactivate();
                         break;
                     }
                 }
+
                 for (int j = 0; j < botEmitter.getActiveList().size(); j++) {
                     BotModel botModel = botEmitter.getActiveList().get(j);
-                    if (botModel.getHitArea().contains(b.getPosition())) {
+
+                    if (botModel.getHitArea().contains(bulletModel.getPosition())) {
                         if (botModel.takeDamage(1)) {
                             playerModel.addScore(botModel.getHpMax() * 100);
-                            powerUpsEmitter.makePower(botModel.getPosition().x, botModel.getPosition().y);
+                            powerUpsEmitter.makePower(
+                                botModel.getPosition().x,
+                                botModel.getPosition().y
+                            );
                             boomEmitter.setup(botModel.getPosition());
                         }
-                        b.deactivate();
+
+                        bulletModel.deactivate();
                         break;
                     }
                 }
             } else {
-                if (playerModel.getHitArea().contains(b.getPosition())) {
+                if (playerModel.getHitArea().contains(bulletModel.getPosition())) {
                     playerModel.takeDamage(5);
-                    b.deactivate();
+                    bulletModel.deactivate();
                     break;
                 }
             }
         }
 
         for (int i = 0; i < asteroidEmitter.getActiveList().size(); i++) {
-            AsteroidModel a = asteroidEmitter.getActiveList().get(i);
-            if (playerModel.getHitArea().overlaps(a.getHitArea())) {
-                float len = playerModel.getPosition().dst(a.getPosition());
-                float interLen = (playerModel.getHitArea().radius + a.getHitArea().radius) - len;
-                collisionHelper.set(a.getPosition()).sub(playerModel.getPosition()).nor();
-                a.getPosition().mulAdd(collisionHelper, interLen);
-                playerModel.getPosition().mulAdd(collisionHelper, -interLen);
-                a.getVelocity().mulAdd(collisionHelper, interLen * 4);
-                playerModel.getVelocity().mulAdd(collisionHelper, -interLen * 4);
-                a.takeDamage(1);
-                playerModel.takeDamage(1);
+            AsteroidModel asteroidModel = asteroidEmitter.getActiveList().get(i);
+
+            if (playerModel.getHitArea().overlaps(asteroidModel.getHitArea())) {
+                float len = playerModel.getPosition().dst(asteroidModel.getPosition());
+
+                // Астероид иногда выталкивает корабль за экран, поэтому глубину пересечения лучше брать по модулю
+                float interLen = Math.abs((playerModel.getHitArea().radius + asteroidModel.getHitArea().radius) - len);
+
+                collisionHelper.set(asteroidModel.getPosition()).sub(playerModel.getPosition()).nor();
+
+                float radiusRatio = playerModel.getHitArea().radius / asteroidModel.getHitArea().radius;
+
+                // Чтобы не бросала вверх-вниз на краю эрана при столкновении с астеройдом
+                if (playerModel.getPosition().x + collisionHelper.x * -interLen > playerModel.getHitArea().radius) {
+                    playerModel.getPosition().mulAdd(collisionHelper, -interLen);
+                    playerModel.getVelocity().mulAdd(collisionHelper, -interLen * 1 / radiusRatio * 70);
+                }
+
+                asteroidModel.getPosition().mulAdd(collisionHelper, interLen);
+                asteroidModel.getVelocity().mulAdd(collisionHelper, interLen * radiusRatio * 70);
+
+                playerModel.takeDamage(5);
+
+                if (asteroidModel.takeDamage(1)) {
+                    powerUpsEmitter.makePower(
+                        asteroidModel.getPosition().x,
+                        asteroidModel.getPosition().y
+                    );
+
+                    boomEmitter.setup(asteroidModel.getPosition());
+                }
+            }
+        }
+
+        for (int i = 0; i < botEmitter.getActiveList().size(); i++) {
+            BotModel botModel = botEmitter.getActiveList().get(i);
+
+            if (playerModel.getHitArea().overlaps(botModel.getHitArea())) {
+                float len = playerModel.getPosition().dst(botModel.getPosition());
+
+                float interLen = Math.abs((playerModel.getHitArea().radius + botModel.getHitArea().radius) - len);
+
+                collisionHelper.set(botModel.getPosition()).sub(playerModel.getPosition()).nor();
+
+                float radiusRatio = playerModel.getHitArea().radius / botModel.getHitArea().radius;
+
+                if (playerModel.getPosition().x + collisionHelper.x * -interLen > playerModel.getHitArea().radius) {
+                    playerModel.getPosition().mulAdd(collisionHelper, -interLen);
+                    playerModel.getVelocity().mulAdd(collisionHelper, -interLen * 1 / radiusRatio * 20);
+                }
+
+                botModel.getPosition().mulAdd(collisionHelper, interLen);
+                botModel.getVelocity().mulAdd(collisionHelper, interLen * radiusRatio * 20);
+
+                playerModel.takeDamage(5);
+
+                if (botModel.takeDamage(5)) {
+                    powerUpsEmitter.makePower(
+                        botModel.getPosition().x,
+                        botModel.getPosition().y
+                    );
+
+                    boomEmitter.setup(botModel.getPosition());
+                }
             }
         }
 
         for (int i = 0; i < powerUpsEmitter.getPowerUps().length; i++) {
-            PowerUpModel p = powerUpsEmitter.getPowerUps()[i];
-            if (p.isActive()) {
-                if (playerModel.getHitArea().contains(p.getPosition())) {
-                    p.use(playerModel);
-                    p.deactivate();
+            PowerUpModel powerUpModel = powerUpsEmitter.getPowerUps()[i];
+
+            if (powerUpModel.isActive()) {
+                if (playerModel.getHitArea().contains(powerUpModel.getPosition())) {
+                    powerUpModel.use(playerModel);
+                    powerUpModel.deactivate();
                 }
             }
         }

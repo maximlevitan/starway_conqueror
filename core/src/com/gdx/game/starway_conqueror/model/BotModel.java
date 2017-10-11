@@ -100,6 +100,27 @@ public class BotModel extends ShipModel implements Poolable {
         position.mulAdd(velocity, dt);
         hitArea.setPosition(position);
         velocity.scl(0.95f);
+
+        float size = velocity.len() / 150.0f;
+        float delta = hitArea.radius;
+
+        game.getParticleEmitter().setup(
+            position.x + delta,
+            position.y,
+            -MathUtils.random(5.0f, 20.0f),
+            MathUtils.random(-4.0f, 4.0f),
+            0.5f,
+            size,
+            0.6f,
+            1.0f,
+            1.0f,
+            1.0f,
+            1.0f,
+            0.0f,
+            0.0f,
+            1.0f,
+            0.0f
+        );
     }
 
     @Override
