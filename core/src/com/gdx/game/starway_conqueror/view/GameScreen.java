@@ -245,7 +245,7 @@ public class GameScreen implements Screen {
                 }
 
                 asteroidModel.getPosition().mulAdd(collisionHelper, interLen);
-                asteroidModel.getVelocity().mulAdd(collisionHelper, interLen * radiusRatio * 70);
+                asteroidModel.getVelocity().mulAdd(collisionHelper, interLen * radiusRatio * 20);
 
                 playerModel.takeDamage(5);
 

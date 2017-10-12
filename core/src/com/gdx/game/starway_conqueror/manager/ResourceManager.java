@@ -121,7 +121,7 @@ public class ResourceManager {
 
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(Gdx.files.internal(filename).file()));
+            br = Gdx.files.internal("leveldata.csv").reader(8192);
             br.readLine();
             String str;
             while ((str = br.readLine()) != null) {
